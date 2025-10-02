@@ -3,6 +3,7 @@
 .env.production
 __pycache__/
 *.pyc
+.DS_Store
 
 # Frontend
 /frontend/.next
