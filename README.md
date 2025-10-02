@@ -53,20 +53,12 @@ graph TB
         F[Pipeline Orchestrator]
     end
 
-    subgraph "Service Layer"
-        G[Document Processing]
-        H[AI/LLM Services]
-        I[Excel Generation]
-        J[Storage Service]
-        K[Cache Service]
-    end
-
     subgraph "External Services"
-        L[Supabase DB]
-        M[Supabase Storage]
-        N[Redis Cache]
-        O[OpenAI API]
-        P[Stripe API]
+        G[Supabase DB]
+        H[Supabase Storage]
+        I[Redis Cache]
+        J[OpenAI API]
+        K[Stripe API]
     end
 
     A --> B
@@ -77,21 +69,18 @@ graph TB
 
     C --> G
     C --> H
+    C --> I
+    C --> J
     D --> G
     D --> H
-    E --> P
+    D --> I
+    D --> J
+    E --> K
+    E --> G
     F --> G
     F --> H
-
-    G --> J
-    H --> O
-    I --> J
-    J --> M
-    K --> N
-
-    G --> L
-    D --> L
-    E --> L
+    F --> I
+    F --> J
 ```
 
 ## Architecture
