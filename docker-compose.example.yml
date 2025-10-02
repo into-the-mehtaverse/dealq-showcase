@@ -1,0 +1,10 @@
+services:
+  backend:
+    image: your-registry/your-backend:latest
+    env_file: [./backend/.env.example]
+    ports: ["127.0.0.1:8000:8000"]
+    restart: unless-stopped
+  frontend:
+    image: your-registry/your-frontend:latest
+    ports: ["127.0.0.1:3000:3000"]
+    restart: unless-stopped

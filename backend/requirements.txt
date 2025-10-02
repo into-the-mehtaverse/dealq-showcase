@@ -1,0 +1,40 @@
+# Core API Framework
+fastapi
+uvicorn[standard]
+
+# PDF Parsing
+PyMuPDF
+pdfplumber
+
+# Excel Manipulation
+openpyxl
+defusedxml
+
+# LLM Integration
+openai
+langchain
+langchain-openai
+
+# File Handling & Utilities
+python-multipart
+aiofiles
+pydantic
+pydantic-settings
+
+# Image Processing
+Pillow
+
+# Storage
+supabase
+
+# Payment Processing
+stripe
+
+# Dev & Testing
+python-dotenv
+httpx
+pytest
+pytest-asyncio
+
+# Caching
+redis[hiredis]>=5.0.0

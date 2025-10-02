@@ -1,0 +1,27 @@
+# DealBuddy Configuration Example
+# Copy this to .env in the root directory
+
+# Required: OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: LLM Model Settings (with defaults)
+LLM_MODEL=gpt-3.5-turbo
+LLM_TEMPERATURE=0.1
+
+# Optional: Text Chunking Configuration
+CHUNK_SIZE=6000          # Maximum characters per chunk (default: 6000)
+CHUNK_OVERLAP=500        # Character overlap between chunks (default: 500)
+MAX_CHUNKS=0             # Maximum chunks to process (0 = no limit, default: 0)
+
+# Usage:
+# 1. Copy this file to .env: cp config.example .env
+# 2. Get your OpenAI API key from https://platform.openai.com/api-keys
+# 3. Replace 'your_openai_api_key_here' with your actual key
+# 4. Adjust chunking settings if needed (defaults work well for most cases)
+# 5. Start the server: uvicorn app.main:app --reload
+# 6. Test configuration: GET /test/config
+
+# Chunking Configuration Notes:
+# - CHUNK_SIZE: Larger = fewer API calls but may hit context limits
+# - CHUNK_OVERLAP: Helps maintain context between chunks
+# - MAX_CHUNKS: Set to limit processing for testing/cost control

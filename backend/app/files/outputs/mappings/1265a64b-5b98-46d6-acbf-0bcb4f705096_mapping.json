@@ -1,0 +1,56 @@
+{
+  "model_id": "1265a64b-5b98-46d6-acbf-0bcb4f705096",
+  "model_name": "dealq-remap",
+  "mappings": {
+    "rent_roll": {
+      "sheet_name": "RR",
+      "data_start_row": 8,
+      "columns": {
+        "unit": "C",
+        "unit_type": "E",
+        "status": "F",
+        "unit_size": "G",
+        "rent": "H",
+        "lease_expiration": "I"
+      }
+    },
+    "t12": {
+      "sheet_name": "T-12",
+      "data_start_row": 5,
+      "columns": {
+        "line_item": "E",
+        "category": "F",
+        "total": "G"
+      }
+    },
+    "property_info": {
+      "type": "property_info",
+      "cells": {
+        "name": {
+          "sheet": "Deal Summary",
+          "cell": "N4"
+        },
+        "address": {
+          "sheet": "Deal Summary",
+          "cell": "N5"
+        },
+        "zip_code": {
+          "sheet": "Deal Summary",
+          "cell": "N6"
+        },
+        "year_built": {
+          "sheet": "Deal Summary",
+          "cell": "N7"
+        },
+        "parking_spots": {
+          "sheet": "Deal Summary",
+          "cell": "N10"
+        },
+        "gross_square_feet": {
+          "sheet": "Deal Summary",
+          "cell": "N12"
+        }
+      }
+    }
+  }
+}

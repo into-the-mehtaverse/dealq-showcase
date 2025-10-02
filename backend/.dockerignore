@@ -1,0 +1,50 @@
+# Backend
+.venv
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.pyc
+
+# Pytest cache
+.cache/
+.pytest_cache/
+
+# Logs and outputs
+*.log
+*.out
+*.tmp
+*.bak
+
+# System files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Env files
+.env
+.env.*
+
+# Uploads & generated files
+files/uploads/
+files/outputs/
+
+# Optional: Supabase metadata (if used later)
+.supabase/
+
+# MyPy, coverage, test reports
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Docker
+*.container
+*.pid
+docker-compose.override.yml

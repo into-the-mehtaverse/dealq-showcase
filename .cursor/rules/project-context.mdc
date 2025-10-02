@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+We are building DealQ, the AI Analyst for Commercial Real Estate.
+This is the monorepo: backend/ is FastAPI and frontend/ is Next.js
+Only write modular, effective, non-redudant code.
+Backend data models are stored in backend/models/
+Frontend data models are stored in frontend/types

@@ -1,0 +1,68 @@
+# Root-level ignores
+.env.development
+.env.production
+__pycache__/
+*.pyc
+
+# Frontend
+/frontend/.next
+/frontend/node_modules
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Backend
+/backend/.venv
+/backend/.env
+/backend/__pycache__/
+/backend/# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+
+# Pytest cache
+backend/.cache/
+backend/.pytest_cache/
+
+# Logs and outputs
+backend/*.log
+backend/*.out
+backend/*.tmp
+backend/*.bak
+
+# System files
+backend/.DS_Store
+backend/Thumbs.db
+
+# VSCode
+backend/.vscode/
+
+# Env files
+backend/.env
+backend/.env.development
+backend/.env.production
+
+# Uploads & generated files
+backend/files/uploads/
+backend/files/outputs/
+
+# Optional: Supabase metadata (if used later)
+backend/.supabase/
+
+# MyPy, coverage, test reports
+backend/.mypy_cache/
+backend/.coverage
+backend/htmlcov/
+
+# Docker
+backend/*.container
+backend/*.pid
+backend/docker-compose.override.yml
+
+# Mac-specific
+Icon?

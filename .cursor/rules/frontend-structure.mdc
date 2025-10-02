@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+Write modular code.
+The frontend is a Next.js project.
+We use shadcn primitives located at components/ui and layout components in components/layout
+We use feature-based grouping of files in features/
+Landing page and related components/code is located at marketing/

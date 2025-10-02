@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+Write modular code.
+Routes -> orchestrators -> services is the backend architecture.
+Each service is pure and does not / should not import other services.
+DB operations only happen through the db service. Other services should not interact with the db.
+The orchestration layer is where operations between different services are coordinated.
+The routing layer should be kept very thin. Often, routes just make a one-line call to an orchestrator.
+Dependencies are managed in the core/dependencies folder - the services.py file is where singleton service instances are created, and the stages.py is where singleton orchestrators are instantied and services instances are imported / injected.
