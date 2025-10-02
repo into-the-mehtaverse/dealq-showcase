@@ -46,12 +46,27 @@ graph TB
         B[FastAPI Routes]
     end
 
+    subgraph "Orchestration Layer"
+        C[Upload Orchestrator]
+        D[Deal Orchestrator]
+        E[Billing Orchestrator]
+        F[Pipeline Orchestrator]
+    end
+
     subgraph "Services"
-        C[Stripe, Document Processing, Caching, DB, Storage]
+        G[Stripe, Document Processing, Caching, DB, Storage]
     end
 
     A --> B
     B --> C
+    B --> D
+    B --> E
+    B --> F
+
+    C --> G
+    D --> G
+    E --> G
+    F --> G
 ```
 
 ## Architecture
