@@ -1,3 +1,5 @@
+**this markdown is a work in progress
+
 # DealQ Monorepo
 
 Welcome to DealQ, the AI workflow platform for commercial real estate investors.
