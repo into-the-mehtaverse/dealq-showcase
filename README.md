@@ -36,3 +36,13 @@ Cloudfare
 
 CI/CD:
 Github Actions
+
+
+1. Backend architecture
+    The backend is organized as follows:
+    Routes -> orchestrators -> services
+    The routes are very thin and are just responsible for passing in data from the request into the orchestrator.
+    Orchestrators are responsible for coordinating between various services.
+    Each service is pure so it can be independently tested and used in various workflows. There is no overlap between services.
+
+    I decided on this modular architecture with orchestrators calling services so that eventually we could run the "AI-enabled" workflows as individual tool calls for an agentic system. The orchestrator-centered architecture lets us have a lot of flexibility in how we use all the functionalities defined in the services.
