@@ -38,71 +38,60 @@ I've stripped out sensitive IP including prompts in this sanitized codebase whic
 
 ```mermaid
 graph TB
-    subgraph "Frontend Layer"
+    subgraph "Frontend"
         A[Next.js App]
-        B[Marketing Pages]
-        C[Dashboard Features]
-        D[Document Viewers]
     end
 
     subgraph "API Layer"
-        E[FastAPI Routes]
-        F[Auth Middleware]
-        G[CORS Middleware]
+        B[FastAPI Routes]
     end
 
     subgraph "Orchestration Layer"
-        H[Upload Orchestrator]
-        I[Deal Orchestrator]
-        J[Billing Orchestrator]
-        K[Pipeline Orchestrator]
+        C[Upload Orchestrator]
+        D[Deal Orchestrator]
+        E[Billing Orchestrator]
+        F[Pipeline Orchestrator]
     end
 
     subgraph "Service Layer"
-        L[Document Processing]
-        M[AI/LLM Services]
-        N[Excel Generation]
-        O[Storage Service]
-        P[Cache Service]
+        G[Document Processing]
+        H[AI/LLM Services]
+        I[Excel Generation]
+        J[Storage Service]
+        K[Cache Service]
     end
 
     subgraph "External Services"
-        Q[Supabase DB]
-        R[Supabase Storage]
-        S[Redis Cache]
-        T[OpenAI API]
-        U[Stripe API]
+        L[Supabase DB]
+        M[Supabase Storage]
+        N[Redis Cache]
+        O[OpenAI API]
+        P[Stripe API]
     end
 
-    A --> E
+    A --> B
+    B --> C
+    B --> D
     B --> E
-    C --> E
-    D --> E
+    B --> F
 
-    E --> F
+    C --> G
+    C --> H
+    D --> G
+    D --> H
+    E --> P
     F --> G
-    G --> H
-    G --> I
+    F --> H
+
     G --> J
-    G --> K
+    H --> O
+    I --> J
+    J --> M
+    K --> N
 
-    H --> L
-    H --> M
-    I --> L
-    I --> M
-    J --> U
-    K --> L
-    K --> M
-
-    L --> O
-    M --> T
-    N --> O
-    O --> R
-    P --> S
-
-    L --> Q
-    I --> Q
-    J --> Q
+    G --> L
+    D --> L
+    E --> L
 ```
 
 ## Architecture
