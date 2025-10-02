@@ -46,41 +46,12 @@ graph TB
         B[FastAPI Routes]
     end
 
-    subgraph "Orchestration Layer"
-        C[Upload Orchestrator]
-        D[Deal Orchestrator]
-        E[Billing Orchestrator]
-        F[Pipeline Orchestrator]
-    end
-
-    subgraph "External Services"
-        G[Supabase DB]
-        H[Supabase Storage]
-        I[Redis Cache]
-        J[OpenAI API]
-        K[Stripe API]
+    subgraph "Services"
+        C[Stripe, Document Processing, Caching, DB, Storage]
     end
 
     A --> B
     B --> C
-    B --> D
-    B --> E
-    B --> F
-
-    C --> G
-    C --> H
-    C --> I
-    C --> J
-    D --> G
-    D --> H
-    D --> I
-    D --> J
-    E --> K
-    E --> G
-    F --> G
-    F --> H
-    F --> I
-    F --> J
 ```
 
 ## Architecture
