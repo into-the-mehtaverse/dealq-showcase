@@ -113,31 +113,32 @@ graph TB
 
 ### 1. Backend Architecture
 
-The backend is organized as follows:
+The backend follows a clean separation of concerns:
 - **Routes** → **Orchestrators** → **Services**
 
-The routes are very thin and are just responsible for passing in data from the request into the orchestrator.
+**Routes** are thin and only handle HTTP concerns - parsing requests, validating input, and passing data to orchestrators.
 
-Orchestrators are responsible for coordinating between various services.
+**Orchestrators** coordinate business logic by calling multiple services. For example, when processing a deal upload, the Upload Orchestrator coordinates the Document Processing Service (PDF/Excel extraction), AI Service (data structuring), and Storage Service (file management).
 
-Each service is pure so it can be independently tested and used in various workflows. There is no overlap between services.
+**Services** are pure, stateless functions that handle specific domains. Each service can be independently tested and reused across different workflows. There's no overlap between services - each has a single responsibility.
 
-I decided on this modular architecture with orchestrators calling services so that eventually we could run the "AI-enabled" workflows as individual tool calls for an agentic system. The orchestrator-centered architecture lets us have a lot of flexibility in how we use all the functionalities defined in the services.
+I decided on this modular architecture bc of two main benefits: (1) easy testing and maintenance since services are isolated, and (2) future flexibility to run AI workflows as individual tool calls for an agentic system. The orchestrator pattern provides a clean abstraction layer between HTTP endpoints and business logic.
 
 ### 2. Frontend Architecture
 
-The frontend uses feature-based grouping of logic.
+I chose **feature-based organization** on the frontend to keep related functionality together and improve maintainability as the team scales.
 
-All "pre-auth" (ie landing/sign-in/pricing) is located in a root directory called "marketing" and the rest of the features are in their respective directories in "features".
+**Directory Structure:**
+- **`/marketing`** - All pre-auth pages (landing, sign-in, pricing) separated from the main app
+- **`/features`** - Feature-specific components, stores, and logic (deals, verification, billing)
+- **`/components`** - Reusable UI primitives and app-wide components
+- **`/lib/api`** - Centralized API actions providing a clear interface to backend capabilities
 
-All API actions are defined in `@/lib/api` so we have a central directory of what is possible from the frontend.
+**Key Components:**
+- **Custom Document Viewers** - Built PDF and Excel viewers with gesture handling for mobile/desktop
+- **OM Viewer** (`@/features/deals/summary`) - Combines PDF viewer with AI-powered classification tooltips that link page numbers to extracted data points
+- **Feature Stores** - Zustand stores scoped to features (e.g., `@/features/verification/store`) with actions, selectors, and types for clean state management that can maintain state across workflows
 
-App-wide components and all primitives are located in `@/components`. This includes custom viewers for PDF and Excel documents. My favorite component is the OM viewer in `@/features/deals/summary`. It combines the custom PDF viewer with gesture handling and includes the classification tooltip which connects page numbers to the page numbers of relevant information that we derived using an LLM workflow.
-
-For state management, we're using Zustand stores. These are mostly defined at the feature level so that relevant information is retained across the lifespan of a workflow. See `@/features/verification/store` for an example of how I structured the store (actions, selectors, types, and store).
-
-Using tailwind for styling due to simplicity. Using OKLCH values for colors because they're cool.
-
-### 3. Deployment Infrastructure
-
-Originally started by running the backend and frontend as two services on Render. When I had more time, moved over to two containers deployed on a single DO droplet (never needed more because we didn't end up going past the private beta). Using caddy for reverse proxy so the ports aren't exposed and then have cloudflare proxy set up on DNS. Using github actions to deploy.
+**Styling & UX:**
+- **Tailwind CSS** for quick shipping and consistency
+- **OKLCH colors** because they're cool
