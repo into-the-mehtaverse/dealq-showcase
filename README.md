@@ -20,6 +20,8 @@ A commercial real estate investor typically receives dozens of deals per week. T
 
 3. The trailing twelve statement - a PDF or excel income statement for the last twelve months at the property, which investors manually categorize based on how they underwrite deals at their firm.
 
+You can find an examples of these three documents in the `/example-deal` folder.
+
 The process of extracting and structuring these documents into a firm's proprietary excel model usually takes anywhere from 30 minutes to a couple of hours or more per deal, often just to find out that a deal doesn't fit the criteria for investing. DealQ's underwriting workflow cut this process down to under 10 minutes.
 
 ## Technical Challenges / Accomplishments
@@ -29,7 +31,9 @@ The process of extracting and structuring these documents into a firm's propriet
 - **Solution**: Built a multi-stage pipeline utilizing a strategic mix of deterministic methods (regex patterns, structured parsing) and AI (LangChain with modular prompts) for intelligent data structuring and validation and concurrent processing for speed
 - **Result**: Achieved 99% accurate data extraction across diverse document formats and building sizes, reducing manual data entry from multiple hours to under 10 minutes per deal
 
-**I breakdown two of the most significant breakthroughs in the [Rent Roll Pipeline Section](#rent-roll-pipeline-design) here** I think this was the most interesting piece of the puzzle / demonstrates the in-depth LLM engineering required for this project.
+**I breakdown two of the most significant breakthroughs in the [Rent Roll Pipeline Section](#rent-roll-pipeline-design)**
+
+^ I think this was the most interesting piece of the puzzle / demonstrates the in-depth LLM engineering required for this project.
 
 ### 2. **Data Security & User Isolation**
 - **Challenge**: Ensuring secure data access and user isolation across enterprise customers in a shared database
@@ -143,7 +147,7 @@ I chose **feature-based organization** on the frontend to keep related functiona
 - **Tailwind CSS** for quick shipping and consistency
 - **OKLCH colors** because they're cool
 
-### Rent Roll Pipeline Design
+## Rent Roll Pipeline Design
 
 **Challenge**: Rent rolls are notoriously messy documents with inconsistent formatting, duplicates, and multiple data points per unit that need to be distilled into clean, structured data.
 
@@ -151,7 +155,7 @@ I chose **feature-based organization** on the frontend to keep related functiona
 
 ![Rent Roll Screenshot](screenshots/rent-roll-screenshot.png)
 
-## Criteria
+### Criteria
 
 The pipeline must be:
 1. **Accurate** - we need to make sure all the data that is pulled is correct
@@ -160,7 +164,7 @@ The pipeline must be:
 4. **Stable** - large properties should not time out the LLM calls
 5. **Fast** - we need to make sure this doesn't feel disruptive to the user's workflow by making them spend ten minutes on a loading screen
 
-## The Process
+### The Process
 
 I will walk you through my iterations building the rent roll pipeline. It always begins by extracting the raw text from the PDF using PyMuPDF with OCR as fallback or OpenPyXL if Excel file.
 
@@ -182,7 +186,7 @@ So, in the final version of the pipeline (after a couple more iterations), I use
 
 I tested this pipeline across hundreds of deals and refined the prompts until we achieved 99% accuracy across any type of deal or rent roll document.
 
-## Additional win on time
+### Additional win on time
 
 For additional gain on processing time, instead of having the final LLM calls return an array of JSON objects like this:
 
@@ -201,7 +205,7 @@ For additional gain on processing time, instead of having the final LLM calls re
     Lease Start: 02/14/2024
     Lease End: 02/13/2025
     Rent Amount: 3500
-},
+}
 ]
 
 I asked them to return an array of arrays:
@@ -225,4 +229,4 @@ I asked them to return an array of arrays:
     ]
 ]
 
-**This reduced token usage by 61% on average per chunk and drastically reduced the response time by more than 50%**
+**This reduced token usage by 61% on average per chunk and drastically reduced the response time by more than 50%.**
