@@ -22,6 +22,8 @@ You can find an examples of these three documents in the `/example-deal` folder.
 
 The process of extracting and structuring these documents into a firm's proprietary excel model usually takes anywhere from 30 minutes to a couple of hours or more per deal, often just to find out that a deal doesn't fit the criteria for investing. DealQ's underwriting workflow cut this process down to under 10 minutes.
 
+![demo-gif](screenshots/demo-gif.gif)
+
 ## Technical Challenges / Accomplishments
 
 ### 1. **AI-Powered Data Extraction Across Inconsistent Document Formats**
