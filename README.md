@@ -182,7 +182,7 @@ So, in the final version of the pipeline (after a couple more iterations), I use
 6. Since we know all the raw text in the chunks is relevant, we process the chunks concurrently with LLMs
 7. Combine all the LLM outputs for the final result
 
-I tested this pipeline across hundreds of deals and refined the prompts until we achieved 99% accuracy across any type of deal or rent roll document.
+I tested this pipeline across hundreds of deals and refined the prompts until we achieved 99% accuracy across any type of deal or rent roll document. I also tested all the competing products which had AI rent roll extractors, and **DealQ was faster, more robust, and more accurate than anything else (as of October 2025)**
 
 ### Additional win on time
 
