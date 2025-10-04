@@ -181,7 +181,7 @@ So, in the final version of the pipeline (after a couple more iterations), I use
 3. LLM Call: As a JSON, Pass in the beginning of the file to X number of rows/characters after the start boundary, as well as X rows before the end boundary all the way to the end of the file. Have the LLM return a JSON which says if the first call was true or false, and if false, then provides the corrected boundary. This is for cases where long files return early or duplicates are being included, so that we are absolutely sure that the data boundaries are correct.
 4. Using regex, we extract only the relevant data in the backend based on the LLM-defined boundaries
 5. "Smart chunking" of the extracted relevant data that respects row and page boundaries and includes the column headers.
-6. Since we all the raw text in the chunks is relevant, we process the chunks concurrently with LLMs
+6. Since we know all the raw text in the chunks is relevant, we process the chunks concurrently with LLMs
 7. Combine all the LLM outputs for the final result
 
 I tested this pipeline across hundreds of deals and refined the prompts until we achieved 99% accuracy across any type of deal or rent roll document.
@@ -230,3 +230,14 @@ I asked them to return an array of arrays:
 ]
 
 **This reduced token usage by 61% on average per chunk and drastically reduced the response time by more than 50%.**
+
+
+## Areas For Improvement
+
+1. Memory management
+
+Any application which processes large amounts of PDFs and excel files must have file streamining and memory limits. DealQ in its current form writes the file to a temp location while pulling the raw text. The Supabase Storage API's stremaing functionality was giving me trouble, so for the sake of shipping the private beta (very controlled), I put a file upload size limit on the front end, beefed up memory on the droplet, and pushed a ticket for fixing this before a full launch.
+
+2. Type safety
+
+For DealQ, I used pydantic for backend typing and defined type interfaces manually in component files / api action files on the frontend. This quickly became a headache to maintain. If I were to continue building this or could go back in time, I would use zod for the frontend and I would use OpenAPI specs to do this automatically instead of manually.
