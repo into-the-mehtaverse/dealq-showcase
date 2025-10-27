@@ -1,3 +1,5 @@
+# THIS CODEBASE WILL NOT RUN LOCALLY IT'S ONLY MEANT TO SHOWCASE
+
 # DealQ Monorepo
 
 Welcome to DealQ, the AI workflow platform for commercial real estate investors.
