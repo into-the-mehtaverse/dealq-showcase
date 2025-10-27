@@ -6,6 +6,14 @@ As the sole technical co-founder, I architected and coded this codebase into pro
 
 I've stripped out sensitive IP including prompts in this sanitized codebase which exists for the purposes of showcasing my work. Below I'll walk you through the stack, architectural choices I made, and where the issues / areas of improvement are here.
 
+Jump to:
+1. [What is DealQ](#what-is-dealq)
+2. [Technical Challenges / Accomplishments](#technical-challenges--accomplishments)
+3. [Tech Stack](#tech-stack)
+4. [System Architecture](#system-architecture)
+5. [Technical Accomplishment: Rent Roll Pipeline](#rent-roll-pipeline-design)
+6. [Areas For Improvement](#areas-for-improvement)
+
 ## What is DealQ
 
 The original vision for DealQ was a platform where CRE investors could access AI powered workflows to solve the most mundane and time-intensive due diligence tasks. Particularly, the one we chose to solve first is deal screening / underwriting.
