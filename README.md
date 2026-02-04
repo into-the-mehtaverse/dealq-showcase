@@ -2,11 +2,13 @@
 
 # DealQ Monorepo
 
-Welcome to DealQ, the AI workflow platform for commercial real estate investors.
+Welcome to DealQ, the AI workflow platform I built for commercial real estate investors.
 
-As the sole technical co-founder, I architected and coded this codebase into production, from schema design to web app design to infra, and it was being used by multiple enterprise customers during our private beta. It was built with scale and future feature shipments in mind. The company has since wound down and I am no longer shipping feature updates.
+I wrote this blog post to show the technical decision-making and problem-solving that went into building DealQ, what I've learned from the process, and how I'd approach things differently next time.
 
-I've stripped out sensitive IP including prompts in this sanitized codebase which exists for the purposes of showcasing my work. Below I'll walk you through the stack, architectural choices I made, and where the issues / areas of improvement are here.
+As the sole technical co-founder, I architected and coded this codebase into production, from schema design to web app design to infra, and it was being used by multiple enterprise customers during our private beta. It was built with scale and future feature shipments in mind. The company has since wound down for reasons outside the scope of this article and I am no longer shipping feature updates.
+
+With that being said, let's jump in.
 
 Jump to:
 1. [What is DealQ](#what-is-dealq)
@@ -18,56 +20,46 @@ Jump to:
 
 ## What is DealQ
 
-The original vision for DealQ was a platform where CRE investors could access AI powered workflows to solve the most mundane and time-intensive due diligence tasks. Particularly, the one we chose to solve first is deal screening / underwriting.
+The original vision for DealQ was a platform where CRE (commercial real estate) investors could access AI powered workflows to solve the most mundane and time-intensive due diligence tasks. Particularly, the one we chose to solve first is deal screening / underwriting.
 
-A commercial real estate investor typically receives dozens of deals per week. There are three primary documents per deal, all of which are highly variable and messy:
+**What that means to you as someone who probably doesn't know anything about real estate**:
 
-1. The offering memorandum - a long, messy, unstructured PDF which contains the investment narrative, property details, market info, and more.
+A CRE investor typically receives dozens of deals per week. There are three primary documents per deal, all of which are highly variable and messy, usually PDF or Excel files, namely:
 
-2. The rent roll - PDF or excel document that contains all the unit data and rents of the property
+1. The offering memorandum - a 20-40 page unstructured PDF which contains the investment narrative and high-level financial info.
 
-3. The trailing twelve statement - a PDF or excel income statement for the last twelve months at the property, which investors manually categorize based on how they underwrite deals at their firm.
+2. The rent roll - multi-page document that contains all the unit data and rents of the property
+
+3. The trailing twelve statement - essentially an income statement for the last twelve months at the property
 
 You can find an examples of these three documents in the `/example-deal` folder.
 
-The process of extracting and structuring these documents into a firm's proprietary excel model usually takes anywhere from 30 minutes to a couple of hours or more per deal, often just to find out that a deal doesn't fit the criteria for investing. DealQ's underwriting workflow cut this process down to under 10 minutes.
+Every real estate firm has highly paid analysts that extract and structure data from the above docs and insert them into the firm's proprietary Excel-based financial model. This process takes anywhere from 30 minutes to multiple hours per property. DealQ's underwriting workflow cut this process down to under 10 minutes.
 
 ![demo-gif](screenshots/demo-gif.gif)
 
 ## Technical Challenges / Accomplishments
 
-### 1. **AI-Powered Data Extraction Across Inconsistent Document Formats**
-- **Challenge**: Extracting structured data from highly variable PDFs and Excel files with inconsistent formatting, layouts, and naming conventions across different deals
-- **Solution**: Built a multi-stage pipeline utilizing a strategic mix of deterministic methods (regex patterns, structured parsing) and AI (LangChain with modular prompts) for intelligent data structuring and validation and concurrent processing for speed
-- **Result**: Achieved 99% accurate data extraction across diverse document formats and building sizes, reducing manual data entry from multiple hours to under 10 minutes per deal
+I'd say there were two main buckets in terms of technical challenges / accomplishments for this codebase. Below, I'll write high-level what they were and the solutions I designed for them.
 
-**I breakdown two of the most significant breakthroughs in the [Rent Roll Pipeline Section](#rent-roll-pipeline-design)**
+### 1. **LLM-Powered Data Extraction Across Inconsistent Document Formats**
+- **The Challenge**: Customers need 100% accurate data in financial modelling. I needed to extract large chunks of messy numerical data from highly variable PDFs using LLMS while preventing hallucinations, missing information, managing context rot, and maintaining speed.
+- **Solution**: On the backend, I built a multi-stage pipeline utilizing a strategic mix of deterministic methods (regex patterns, structured parsing) and LLMs for intelligent data structuring, with concurrent processing for speed. On the frontend, I built a workflow that lets investors see the structured data output, compare accuracy against the source documents side-by-side and make changes if needed (our extraction accuracy during the beta was 99% across ~300 deals we tested).
 
-^ I think this was the most interesting piece of the puzzle / demonstrates the in-depth LLM engineering required for this project.
-
-### 2. **Data Security & User Isolation**
-- **Challenge**: Ensuring secure data access and user isolation across enterprise customers in a shared database
-- **Solution**: Implemented Supabase RLS policies with user-scoped data access patterns and backend endpoint authorization checks. Modularized database layer that could be transferred onto seperate DB containers for true multi-tenant architecture down the line (to support enterprise)
-- **Result**: Secure data isolation supporting multiple enterprise clients with proper access controls
-
-### 3. **Production-Ready Infrastructure**
-- **Challenge**: Building a scalable, maintainable, and fault-tolerant system ready for enterprise customers
-- **Solution**: Containerized application with Docker, deployed on Digital Ocean with Caddy reverse proxy, CI/CD with GitHub Actions, optimistic uploads, type safety on frontend/backend, and async processing pipelines
-- **Result**: Robust production system that handled enterprise-level loads during private beta with minimal downtime
-
-### 4. **Excel Model Integration**
-- **Challenge**: Allowing users to upload and integrate their proprietary Excel models with AI-extracted data
-- **Solution**: Built custom Excel generation service with dynamic model mapping and validation
-- **Result**: Seamless integration between AI-extracted data and existing underwriting workflows
+### 2. **Production-Ready Infrastructure**
+- **Challenge**: Architecting a scalable, maintainable, and fault-tolerant system ready for enterprise customers for the first time. Prior to DealQ, my engineering focus had been mobile consumer applications.
+- **Solution**: I deployed a containerized application with Docker, deployed on Digital Ocean with Caddy reverse proxy, CI/CD with GitHub Actions, optimistic upload patterns, RLS and rigorous authentication, type safety on frontend/backend, and async processing pipelines. I designed a modular architecture that could easily convert our human-in-the-loop workflows into agentic tool calls (more on this later).
 
 ## Tech Stack
+
+Now, a quick overview of the tech stack.
 
 ### Backend
 - FastAPI (Python)
 - LangChain for coordinating LLMs
 - PyMuPDF for reading docs
 - Redis for caching
-- Celery + Redis for bg workers (mocked w BackgroundTasks)
+- Background workers
 - OpenPyXl for working with excel files
 - Supabase S3 for storage
 - Supabase for DB
@@ -151,17 +143,13 @@ I chose **feature-based organization** on the frontend to keep related functiona
 **Key Components:**
 - **Custom Document Viewers** - Built PDF and Excel viewers with gesture handling for desktop. Using custom-styled radix primitives for more complex components and ShadCN elsewhere.
 - **OM Viewer** (`@/features/deals/summary`) - Combines PDF viewer with AI-powered classification tooltips that link page numbers to extracted data points
-- **Feature Stores** - Zustand stores scoped to features (e.g., `@/features/verification/store`) with actions, selectors, and types for clean state management that can be maintained across workflows
-
-**Styling & UX:**
-- **Tailwind CSS** for quick shipping and consistency
-- **OKLCH colors** because they're cool
+- **Feature Stores** - Zustand stores scoped to features with actions, selectors, and types for clean state management that can be maintained across workflows. (I love Zustand and use it for all my projects)
 
 ## Rent Roll Pipeline Design
 
-**Challenge**: Rent rolls are notoriously messy documents with inconsistent formatting, duplicates, and multiple data points per unit that need to be distilled into clean, structured data.
+Here's a deep dive on a specific challenge I encountered while building the extraction pipeline. I am including this section so you can get a sense of how I think about technical problems. I'll start by framing what we're trying to do, defining the criteria for success, and finally, you'll read a blurb on how I iterated to the final solution.
 
-**The Problem** Rent rolls contain hundreds of units, duplicate information, inconsistent formatting between buildings and row-level inconsistencies as well. See the below screenshot as an example. For the first unit MLB-204, there is data for the current resident and the future applicant (column unit lease status). Additionally, The current resident has entries for parking rent and lease rent (column trans code). The investor needs to boil this information down to just the occupying resident's information and current lease rent (no parking or discounts etc). A real estate analyst cleaning this information manually may take multiple hours. We need to create a system that can handle all sorts of inconsistencies and get the accurate information out in a structured fashion.
+**The Problem** Rent roll documents contain hundreds of units, duplicate information, inconsistent formatting between buildings and row-level inconsistencies as well. See the below screenshot as an example. The investor needs to boil this information down to just the occupying resident's information and current lease rent (no parking or discounts etc). We need to create a system that can handle all sorts of inconsistencies and get the accurate information out in a structured fashion with the same accuracy as a real estate analyst in a fraction of the time.
 
 ![Rent Roll Screenshot](screenshots/rent-roll-screenshot.png)
 
@@ -178,9 +166,9 @@ The pipeline must be:
 
 I will walk you through my iterations building the rent roll pipeline. It always begins by extracting the raw text from the PDF using PyMuPDF with OCR as fallback or OpenPyXL if Excel file.
 
-First, I tried to one-shot the structuring by passing in the raw text with a strong prompt to see how far that would get. It appeared that up to 5000 characters / 40 units it would succeed in returning all the units, but the rent numbers would be inconsistent (mixing up headers of lease rent versus market rent - we always want lease rent). For any larger property or file, the LLM would return early and leave out units or it would time out and return an error.
+First, I tried to one-shot the structuring by passing in the raw text with a strong prompt to see how far that would get. It appeared that up to ~5000 characters / 40 units it would succeed in returning all the units, but the rent numbers would be inconsistent (mixing up headers, etc). For any larger property or file, the LLM would return early and leave out units or it would time out and return an error.
 
-In the second iteration, I tried to chunk the rent roll file and process concurrently in chunks of 5000 characters (respecting row / page boundaries). While this allowed handling of large properties / files,  I ran into the issue of duplicates and totals being included since each chunk did not know what was included in the other chunks.
+In the second iteration, I tried to chunk the rent roll file and process concurrently in chunks of 5000 characters (respecting row / page boundaries). While this allowed handling of large properties / files, I ran into the issue of duplicates and totals being included since each chunk did not know what was included in the other chunks.
 
 Then, I tried sequential processing of chunks while updating the unit count based on what was listed in the offering memorandum and force return when the count was hit, but inconsistencies across data sources made this solution very brittle, and even in situations with perfect data, it was very slow.
 
@@ -248,6 +236,10 @@ I asked them to return an array of arrays:
 
 Any application which processes large amounts of PDFs and excel files must have file streamining and memory limits. DealQ in its current form writes the file to a temp location while pulling the raw text. The Supabase Storage API's stremaing functionality was giving me trouble, so for the sake of shipping the private beta (very controlled), I put a file upload size limit on the front end, beefed up memory on the droplet, and pushed a ticket for fixing this before a full launch.
 
-2. Type safety
+2. Language choice & Type Safety
 
-For DealQ, I used pydantic for backend typing and defined type interfaces manually in component files / api action files on the frontend. This quickly became a headache to maintain. If I were to continue building this or could go back in time, I would use zod for the frontend and I would use OpenAPI specs to do this automatically instead of manually.
+For DealQ, I built the backend with Python and the frontend with Typescript. I did this because I like coding in Python, but the multi-language codebase resulted in more complexity without any clear benefit. Looking back, I would have built fully Typescript across the codebase. Had any need arose for a library or service in another language, I'd have just deployed a microservice for the specific use case while keeping as much in TS as possible. Specifically, type safety and maintaing consistency in data models across the FE / BE became a nightmare. I used pydantic for backend typing, but defined type interfaces manually in component files / api action files on the frontend (an oversight, I should've used Zod but didn't know better when I started). Had I gone full Typescript, I could have built a shared types package in the root of the monorepo and had both apps require it as a dependency.
+
+3. Database management
+
+I did a terrible job at a managing DB migrations - I defined schemas, RLS policies, triggers, etc. in non-chronologically organized files with inconsistent naming and directly ran them in the SQL editor on Supabase while keeping records of what I ran in a /db folder in the backend. I get shudders when I think about this now. I should have built clean, reproducible, and reversible migrations with clear chronological naming and managed migrations effectively through scripts via the cli. I've changed the way I handle db management entirely after the mistakes on DealQ.
