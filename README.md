@@ -1,6 +1,6 @@
 ### THIS CODEBASE WILL NOT RUN LOCALLY IT'S ONLY MEANT TO SHOWCASE; DEALQ STILL HAS PAYING CUSTOMERS AS OF DEC 2025 AND I WISH TO RESPECT THE SHARED IP OF THE LLC
 
-# DealQ Monorepo
+# I shut down my start-up and broke down how I built the codebase
 
 Welcome to DealQ, the AI workflow platform I built for commercial real estate investors.
 
